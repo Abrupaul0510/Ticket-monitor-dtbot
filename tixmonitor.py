@@ -10,6 +10,8 @@ from dotenv import load_dotenv
 import os
 import ast
 import datetime
+import gspread
+
 
 load_dotenv()
 
@@ -53,7 +55,22 @@ def check_ticket_count():
 
 def checknget_owner(sdstaffid,filterstatus):
 
-    df = pd.read_excel('duty.xlsx', sheet_name="On duty")
+    cfile = "paul-monitoring-c738e35dd511.json"
+
+    gc = gspread.service_account(cfile)
+    
+    sh = gc.open('dutypol')
+
+    ###https://docs.google.com/spreadsheets/d/195PrVSPkEjvpvctcBP99vlVCOxD5QEmE7fp9YjFEDxE
+
+    worksheet = sh.get_worksheet(0)
+
+# read the data into a Pandas DataFrame
+    data = worksheet.get_all_records()
+
+# create a Pandas DataFrame from the data
+    df = pd.DataFrame(data)
+
 
     data = df[df['SD.Status'] == filterstatus]
 
@@ -63,7 +80,7 @@ def checknget_owner(sdstaffid,filterstatus):
     #Extracting only ticket number with SL status
     sdid = [d['SD.Id'] for d in my_dict]
     sdname = [d['SD.Name'].strip() for d in my_dict]
-    sdnumber = [d['SD.Number'].strip() for d in my_dict]
+    sdnumber = [d['SD.Number'] for d in my_dict]
     sdstatus = [d['SD.Status'].strip() for d in my_dict]
 
 
@@ -102,7 +119,7 @@ while True:
     #         'ticketType': 'IT Service Request',
     #         'terminal': '1',
     #         'title': 'Delete data of pac batch-20SLZ01071309 Bacoor IPRAN A  PAC 2022-12-19',
-    #         'url': 'oss_core/ofm/modules/pto/workorder/views/newEngineeringCollaborationWorkOrderIng?todoFlag=Y&ticketType=RFT&packageId=1578625789908&orderCode=INT20221220000019&workOrderId=3411081'   
+    #         'url': 'oss_core/ofm/modules/pto/workorder/views/newEngineeringCollaborationWorkOrderIng?todoFlag=Y&ticketType=RFT&packageId=1578625789908&orderCode=INT20221228000020&workOrderId=3411081'   
     #         },
     #         #  {  
     #         # 'date': '2022-12-19 21:09:05',
@@ -114,7 +131,7 @@ while True:
     #         # },
     #         ]
     #         }
-    # print(tixcountres)
+    # # print(tixcountres)
     tixcount = tixcountres
     if len(tixcount) == 0:
         paul = "meron"

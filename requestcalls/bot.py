@@ -10,7 +10,7 @@ def send_ding(tix,title,sdnames,sdwhatsya,sdnumber,sdlastouch,sdnameoff,sdlastto
     
 
     ding_token = dt_key
-
+    sdnumbr = '+63-'+str(sdnumber)
     sdwhat = sdwhatsya
     sdstatus = sdlastouch
     tixstatus = status
@@ -56,7 +56,8 @@ def send_ding(tix,title,sdnames,sdwhatsya,sdnumber,sdlastouch,sdnameoff,sdlastto
         title = title
         owners = sdnames
         wut = sdwhat
-        sdnumbr = sdnumber
+        
+  
 
         if sdstatus == "Available":
 
@@ -71,7 +72,7 @@ def send_ding(tix,title,sdnames,sdwhatsya,sdnumber,sdlastouch,sdnameoff,sdlastto
             json_data = {
                     "at": {
                 "atMobiles":[
-                    str(sdnumbr)
+                    sdnumbr
                 ],
                 "atUserIds":[
                     ""
@@ -100,7 +101,7 @@ def send_ding(tix,title,sdnames,sdwhatsya,sdnumber,sdlastouch,sdnameoff,sdlastto
             json_data = {
                     "at": {
                 "atMobiles":[
-                    sdnumber
+                    sdnumbr
                 ],
                 "atUserIds":[
                     ""
