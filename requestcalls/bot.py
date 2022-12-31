@@ -43,7 +43,7 @@ def send_ding(tix,title,sdnames,sdwhatsya,sdnumber,sdlastouch,sdnameoff,sdlastto
             },
             'msgtype': 'text',
             'text': {
-                'content': f'*{wut}!! LIVE OFM Ticket \n\nTicket: {tixnum}\n\nTitle: {title}\n\nStatus: {tixstatus}\nOn Que: {tminutes}m {tseconds}s\nPlease get the ticket',
+                'content': f'[{wut}] OFM Ticket 1.2\n\nTicket: {tixnum}\n\nTitle: {title}\n\nStatus: {tixstatus}\nOn Que: {tminutes}m {tseconds}s\nPlease get the ticket',
             },
         }
         response = requests.post('https://oapi.dingtalk.com/robot/send', params=params, headers=headers, json=json_data)
@@ -81,7 +81,7 @@ def send_ding(tix,title,sdnames,sdwhatsya,sdnumber,sdlastouch,sdnameoff,sdlastto
             },
             'msgtype': 'text',
             'text': {
-                'content': f'*{wut} Live OFM Ticket\n\nTicket: {tixnum}\n\nTitle: {title}\n\nStatus: {tixstatus}\n\nOwner: {owners}\n\nOn Que: {tminutes}m {tseconds}s',
+                'content': f'[{wut}] OFM Ticket 1.2\n\nTicket: {tixnum}\n\nTitle: {title}\n\nStatus: {tixstatus}\n\nOwner: {owners}\n\nOn Que: {tminutes}m {tseconds}s',
             },
             }
             response = requests.post('https://oapi.dingtalk.com/robot/send', params=params, headers=headers, json=json_data)
@@ -110,7 +110,7 @@ def send_ding(tix,title,sdnames,sdwhatsya,sdnumber,sdlastouch,sdnameoff,sdlastto
             },
             'msgtype': 'text',
             'text': {
-                'content': f'*{wut} Live OFM Ticket\n\nTicket: {tixnum}\n\nTitle: {title}\n\nStatus: {tixstatus}\n\nOwner: {sdnameoff} ~~NOT AVAILABLE~~\nLast Handler: {sdnames}\n\nOn Que: {tminutes}m {tseconds}s',
+                'content': f'[{wut}] OFM Ticket 1.2\n\nTicket: {tixnum}\n\nTitle: {title}\n\nStatus: {tixstatus}\n\nOwner: {sdnameoff} ~~NOT AVAILABLE~~\nLast Handler: {sdnames}\n\nOn Que: {tminutes}m {tseconds}s',
             },
             }
             response = requests.post('https://oapi.dingtalk.com/robot/send', params=params, headers=headers, json=json_data)
