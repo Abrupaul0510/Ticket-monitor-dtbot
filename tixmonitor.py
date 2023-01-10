@@ -3,7 +3,7 @@ import requests
 import pandas as pd
 import re
 from requestcalls.getdata import get_tix_details,get_task_order
-from requestcalls.bot import send_ding
+from requestcalls.bot import send_ding,send_ding_error
 import datetime
 from dotenv import load_dotenv
 import os
@@ -58,7 +58,7 @@ def checknget_owner(sdstaffid,filterstatus):
 
     gc = gspread.service_account(cfile)
     
-    sh = gc.open('dutypol')
+    sh = gc.open('sdstatus')
 
     ###https://docs.google.com/spreadsheets/d/195PrVSPkEjvpvctcBP99vlVCOxD5QEmE7fp9YjFEDxE
 
@@ -81,9 +81,7 @@ def checknget_owner(sdstaffid,filterstatus):
     sdname = [d['SD.Name'].strip() for d in my_dict]
     sdnumber = [d['SD.Number'] for d in my_dict]
     sdstatus = [d['SD.Status'].strip() for d in my_dict]
-
-
-
+    
     dataSD = {}
     for i, (j, k, s) in zip(sdid, zip(sdname, sdnumber, sdstatus)):
         dataSD[i] = (j, k,s)  
@@ -102,6 +100,37 @@ def checknget_owner(sdstaffid,filterstatus):
                 'Number' : ""}
 
 
+def get_all_available(filterstatus):
+
+    cfile = "paul-monitoring-c738e35dd511.json"
+
+    gc = gspread.service_account(cfile)
+    
+    sh = gc.open('sdstatus')
+
+    worksheet = sh.get_worksheet(0)
+    data = worksheet.get_all_records()
+
+    df = pd.DataFrame(data)
+
+
+    data = df[df['SD.Status'] == filterstatus]
+
+    my_dict = data.to_dict(orient = 'records')
+
+
+    sdnumber = [d['SD.Number'] for d in my_dict]
+
+
+
+    allavail = []
+    for items in sdnumber:
+        sdnum = "+63-"+str(items)
+        allavail.append(sdnum)
+
+    return allavail
+
+
 def get_initial_session():
     cookies = {
     'bss3_portal_index': '1',
@@ -113,10 +142,8 @@ def get_initial_session():
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0',
         'Accept': 'image/avif,image/webp,*/*',
         'Accept-Language': 'en-US,en;q=0.5',
-        # 'Accept-Encoding': 'gzip, deflate, br',
         'Connection': 'keep-alive',
-        'Referer': 'https://portal.dito.ph/portal-web/',
-        # 'Cookie': 'bss3_portal_index=1; HTML_VERSION=1672449694815; ZSMART_LOCALE=en',
+        'Referer': 'https://portal.dito.ph/portal-web/',    
         'Sec-Fetch-Dest': 'image',
         'Sec-Fetch-Mode': 'no-cors',
         'Sec-Fetch-Site': 'same-origin',
@@ -126,7 +153,7 @@ def get_initial_session():
         'https://portal.dito.ph/portal-web/portal/LoginController/vcode.do?1672449751153',
         cookies=cookies,
         headers=headers,
-    )
+    timeout=30)
     
 
     return responsecok.cookies.get("SESSION")
@@ -202,7 +229,7 @@ def tixmonitor(cookiesverfied):
         #         'ticketType': 'IT Service Request',
         #         'terminal': '1',
         #         'title': 'Delete data of pac batch-20SLZ01071309 Bacoor IPRAN A  PAC 2022-12-19',
-        #         'url': 'oss_core/ofm/modules/pto/workorder/views/newEngineeringCollaborationWorkOrderIng?todoFlag=Y&ticketType=RFT&packageId=1578625789908&orderCode=INT20221228000020&workOrderId=3411081'   
+        #         'url': 'oss_core/ofm/modules/pto/workorder/views/newEngineeringCollaborationWorkOrderIng?todoFlag=Y&ticketType=RFT&packageId=1578625789908&orderCode=SRT20230110000005&workOrderId=3411081'   
         #         },
         #         #  {  
         #         # 'date': '2022-12-19 21:09:05',
@@ -214,7 +241,7 @@ def tixmonitor(cookiesverfied):
         #         # },
         #         ]
         #         }
-        # # print(tixcountres)
+        # # # print(tixcountres)
         tixcount = tixcountres
         if len(tixcount) == 0:
             paul = "meron"
@@ -292,19 +319,6 @@ def tixmonitor(cookiesverfied):
                         sdname = owner_excel.get('Name')
                         sdnumber = owner_excel.get('Number')
 
-                        # to_ding = [{
-                        #     'Ticket Number': tix, 
-                        #     'Ticket Title': title,
-                        #     'SD_Name': sdname,
-                        #     'age': 30,
-                        #     'age': 30,
-                        #     'age': 30,
-                        #     'age': 30,
-                        #     'age': 30,
-                        #     'age': 30,
-                        #     'age': 30,
-                        #     'age': 30,
-                        #     }]
 
                         if sdstatusowner == "Available":
                             res = send_ding(tix,sdname,sdwhat,sdnumber,sdstatusowner,sdnameoff,sdlasttouch,status,tminutes,tseconds,domaindata)
@@ -360,25 +374,20 @@ def tixmonitor(cookiesverfied):
                             sdnameoff = result.get('Name')
 
                             sdnames = ""
-                            # print(sdnameoff)
                             res = send_ding(tix,name,sdwhat,number,sdstatusowner,sdnameoff,sdlasttouch,status,tminutes,tseconds,domaindata)
                             print(res)
 
                     else:
                         print("NEW TICKET!")
                         sdwhat = "New"
-                        noowner = "None"
                         sdnames = ""
                         sdnumber= ""
                         sdstatusowner=" "
                         sdnameoff = ""
                         sdlasttouch = ""
                         # GET all available
-                        owner_excel = checknget_owner(sdstaffid,filterstatus='Available')
-                        sdstatusowner = owner_excel.get('Status')
-                        sdname = owner_excel.get('Name')
-                        sdnumber = owner_excel.get('Number')
-                        res = send_ding(tix,sdnames,sdwhat,sdnumber,sdstatusowner,sdnameoff,sdlasttouch,status,tminutes,tseconds,domaindata)
+                        allavail = get_all_available(filterstatus='Available')
+                        res = send_ding(tix,sdnames,sdwhat,sdnumber,sdstatusowner,sdnameoff,sdlasttouch,status,tminutes,tseconds,allavail)
                         print(res)
                             
                         
@@ -388,10 +397,15 @@ def tixmonitor(cookiesverfied):
         time.sleep(3)
 
 
-
+def startmonitor():
+    while True:
+        try:
+            cookiesverfied = compelete_session()
+            print('Monitoring your OFM To Do List....')
+            tixmonitor(cookiesverfied)
+        except ConnectionError as _err_:
+            print(_err_, "Will Re-run in 30sec")
+        time.sleep(30)
 
 #START Monitor
-cookiesverfied = compelete_session()
-print('Monitoring your OFM To Do List....')
-tixmonitor(cookiesverfied)
-
+startmonitor()
