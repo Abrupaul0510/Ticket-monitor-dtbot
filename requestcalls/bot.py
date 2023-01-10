@@ -8,8 +8,10 @@ dt_key = os.getenv("DT_API")
 dt_key_checker = os.getenv("DT_API_CHECKER")
 bot_host = os.getenv("NNAME")
 
-def send_ding(tix,title,sdnames,sdwhatsya,sdnumber,sdlastouch,sdnameoff,sdlasttouch,status,tminutes,tseconds):
-    
+def send_ding(tix,sdnames,sdwhatsya,sdnumber,sdlastouch,sdnameoff,sdlasttouch,status,tminutes,tseconds,domaindata):
+    title = domaindata['title']
+    domain = domaindata['tdomain']
+    system = domaindata['sytem']
 
     ding_token = dt_key
     sdnumbr = '+63-'+str(sdnumber)
@@ -20,8 +22,11 @@ def send_ding(tix,title,sdnames,sdwhatsya,sdnumber,sdlastouch,sdnameoff,sdlastto
     if sdwhat == "New":
 
         tixnum = tix
-        title = title
+
         wut = sdwhat
+        title = domaindata['title']
+        domain = domaindata['tdomain']
+        sytem = domaindata['sytem']
   
 
 
@@ -45,7 +50,7 @@ def send_ding(tix,title,sdnames,sdwhatsya,sdnumber,sdlastouch,sdnameoff,sdlastto
             },
             'msgtype': 'text',
             'text': {
-                'content': f'[{wut}] OFM Ticket \n\nTicket: {tixnum}\n\nTitle: {title}\n\nStatus: {tixstatus}\nOn Que: {tminutes}m {tseconds}s\nPlease get the ticket\n\nBotHost:{bot_host}',
+                'content': f'[{wut}] OFM Ticket \n\nTicket: {tixnum}\n\nTitle: {title}\n\nSystem Domain: {domain}\nSystem:{system}\n\nStatus: {tixstatus}\nOn Que: {tminutes}m {tseconds}s\nPlease get the ticket\n\nBotHost:{bot_host}',
             },
         }
         response = requests.post('https://oapi.dingtalk.com/robot/send', params=params, headers=headers, json=json_data,timeout=120)
@@ -83,7 +88,7 @@ def send_ding(tix,title,sdnames,sdwhatsya,sdnumber,sdlastouch,sdnameoff,sdlastto
             },
             'msgtype': 'text',
             'text': {
-                'content': f'[{wut}] OFM Ticket 1.2\n\nTicket: {tixnum}\n\nTitle: {title}\n\nStatus: {tixstatus}\n\nOwner: {owners}\n\nOn Que: {tminutes}m {tseconds}s\n\nBotHost:{bot_host}',
+                'content': f'[{wut}] OFM Ticket 1.2\n\nTicket: {tixnum}\n\nTitle: {title}\n\nSystem Domain: {domain}\nSystem:{system}\n\n\Status: {tixstatus}\n\nOwner: {owners}\n\nOn Que: {tminutes}m {tseconds}s\n\nBotHost:{bot_host}',
             },
             }
             response = requests.post('https://oapi.dingtalk.com/robot/send', params=params, headers=headers, json=json_data,timeout=5)
@@ -112,7 +117,7 @@ def send_ding(tix,title,sdnames,sdwhatsya,sdnumber,sdlastouch,sdnameoff,sdlastto
             },
             'msgtype': 'text',
             'text': {
-                'content': f'[{wut}] OFM Ticket 1.2\n\nTicket: {tixnum}\n\nTitle: {title}\n\nStatus: {tixstatus}\n\nOwner: {sdnameoff} ~~NOT AVAILABLE~~\nLast Handler: {sdnames}\n\nOn Que: {tminutes}m {tseconds}s\n\nBotHost:{bot_host}',
+                'content': f'[{wut}] OFM Ticket 1.2\n\nTicket: {tixnum}\n\nTitle: {title}\nSystem Domain: {domain}\nSystem: {system}\n\nStatus: {tixstatus}\n\nOwner: {sdnameoff} ~~NOT AVAILABLE~~\nLast Handler: {sdnames}\n\nOn Que: {tminutes}m {tseconds}s\n\nBotHost:{bot_host}',
             },
             }
             response = requests.post('https://oapi.dingtalk.com/robot/send', params=params, headers=headers, json=json_data,timeout=120)

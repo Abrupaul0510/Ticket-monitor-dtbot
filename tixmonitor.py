@@ -252,7 +252,14 @@ def tixmonitor(cookiesverfied):
                     samp = resdata['resultData']['rows'][0]
 
                     # pprint.pprint(samp)
-
+                    domain = samp['systemDomain']
+                    system = samp['system']
+                    title = samp['orderTitle']
+                    domaindata = {
+                        'tdomain' : domain,
+                        'system' : system,
+                        'title' : title
+                    }
                     tix = samp['orderCode'] #TIXNUM
                     status = samp['tacheName'] #STATUS
                     orderId = samp['orderId'] #HANDLER ORG
@@ -300,7 +307,7 @@ def tixmonitor(cookiesverfied):
                         #     }]
 
                         if sdstatusowner == "Available":
-                            res = send_ding(tix,title,sdname,sdwhat,sdnumber,sdstatusowner,sdnameoff,sdlasttouch,status,tminutes,tseconds)
+                            res = send_ding(tix,sdname,sdwhat,sdnumber,sdstatusowner,sdnameoff,sdlasttouch,status,tminutes,tseconds,domaindata)
     
                         if sdstatusowner == "Not Available":
                             # pprint.pprint(taskdata)
@@ -354,7 +361,7 @@ def tixmonitor(cookiesverfied):
 
                             sdnames = ""
                             # print(sdnameoff)
-                            res = send_ding(tix,title,name,sdwhat,number,sdstatusowner,sdnameoff,sdlasttouch,status,tminutes,tseconds)
+                            res = send_ding(tix,name,sdwhat,number,sdstatusowner,sdnameoff,sdlasttouch,status,tminutes,tseconds,domaindata)
                             print(res)
 
                     else:
@@ -371,7 +378,7 @@ def tixmonitor(cookiesverfied):
                         sdstatusowner = owner_excel.get('Status')
                         sdname = owner_excel.get('Name')
                         sdnumber = owner_excel.get('Number')
-                        res = send_ding(tix,title,sdnames,sdwhat,sdnumber,sdstatusowner,sdnameoff,sdlasttouch,status,tminutes,tseconds)
+                        res = send_ding(tix,sdnames,sdwhat,sdnumber,sdstatusowner,sdnameoff,sdlasttouch,status,tminutes,tseconds,domaindata)
                         print(res)
                             
                         
