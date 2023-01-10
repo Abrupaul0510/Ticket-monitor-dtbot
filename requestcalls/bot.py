@@ -5,6 +5,7 @@ import os
 load_dotenv()
 
 dt_key = os.getenv("DT_API")
+dt_key_checker = os.getenv("DT_API_CHECKER")
 bot_host = os.getenv("NNAME")
 
 def send_ding(tix,title,sdnames,sdwhatsya,sdnumber,sdlastouch,sdnameoff,sdlasttouch,status,tminutes,tseconds):
@@ -125,8 +126,8 @@ def send_ding_open_tix(stringdata,stringdata2,data):
         }
 
     params = {
-            'access_token': '491833b0fb23152ca7c951a354bce0efcc79d009945cf391089b43d08c9e620e',
-    # https://oapi.dingtalk.com/robot/send?access_token=491833b0fb23152ca7c951a354bce0efcc79d009945cf391089b43d08c9e620e
+            'access_token': dt_key_checker,
+    # https://oapi.dingtalk.com/robot/send?access_token=491833b0fb23152ca7c951a354bce0efcc79d009945cf391089b43d08c9e620e Sample Changed
         }
 
     json_data = {
@@ -155,8 +156,8 @@ def send_ding_error(_error_):
         }
 
     params = {
-            'access_token': '0440438cefcd8450062bd8fc6ba5c47f9c9da4898fc08246ca7ce9e165c20d58',
-    # https://oapi.dingtalk.com/robot/send?access_token=0440438cefcd8450062bd8fc6ba5c47f9c9da4898fc08246ca7ce9e165c20d58
+            'access_token': dt_key_checker,
+    # https://oapi.dingtalk.com/robot/send?access_token=0440438cefcd8450062bd8fc6ba5c47f9c9da4898fc08246ca7ce9e165c20d58 Changed
         }
 
     json_data = {
