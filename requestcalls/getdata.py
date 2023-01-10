@@ -26,7 +26,7 @@ def get_tix_details(ticketn):
         'moduleName': 'taskflow',
         'param': '{"serviceName":"ptoOrderServiceBean","method":"queryOrderMonitorList","p0":"{\\"orderState\\":\\"-1\\",\\"orderCode\\":\\"\\",\\"orderCodeOrTitle\\":\\"'+ticketnumber+'\\",\\"packageId\\":null,\\"pageIndex\\":1,\\"pageSize\\":20,\\"resetPage\\":true,\\"qryOrgRegion\\":null,\\"notTicketType\\":[\\"PNAT\\"]}"}',
         }
-    response = requests.post('https://portal.dito.ph/oss-eoms-taskflow/executeService/execute.do',headers=headers,data=data,)
+    response = requests.post('https://portal.dito.ph/oss-eoms-taskflow/executeService/execute.do',headers=headers,data=data,timeout=30)
     # print("Status: ", response.status_code)
     res = response.json()
     return res
@@ -63,6 +63,7 @@ def get_open_ticket(staffID):
         'https://portal.dito.ph/oss-eoms-taskflow/executeService/execute.do',
         headers=headers,
         data=data,
+        timeout=200
     )
 
     res = response.json()
@@ -103,7 +104,7 @@ def get_task_order(orderIDs,shardingKey):
         'https://portal.dito.ph/oss-eoms-taskflow/executeService/execute.do',
         headers=headers,
         data=data,
-    )
+    timeout=200)
     res = response.json()
 
     return res

@@ -7,14 +7,14 @@ from requestcalls.bot import send_ding
 import datetime
 from dotenv import load_dotenv
 import os
-import datetime
 import gspread
+
 
 
 #LOAD .env file
 load_dotenv()
 
-#intialize session needed data
+#intialize session needed data from ENV
 name = os.getenv("NNAME")
 sapp = os.getenv("SAPP")
 
@@ -366,7 +366,11 @@ def tixmonitor(cookiesverfied):
                         sdstatusowner=" "
                         sdnameoff = ""
                         sdlasttouch = ""
-                        # GET OWNER
+                        # GET all available
+                        owner_excel = checknget_owner(sdstaffid,filterstatus='Available')
+                        sdstatusowner = owner_excel.get('Status')
+                        sdname = owner_excel.get('Name')
+                        sdnumber = owner_excel.get('Number')
                         res = send_ding(tix,title,sdnames,sdwhat,sdnumber,sdstatusowner,sdnameoff,sdlasttouch,status,tminutes,tseconds)
                         print(res)
                             
@@ -377,7 +381,10 @@ def tixmonitor(cookiesverfied):
         time.sleep(3)
 
 
+
+
 #START Monitor
 cookiesverfied = compelete_session()
 print('Monitoring your OFM To Do List....')
 tixmonitor(cookiesverfied)
+

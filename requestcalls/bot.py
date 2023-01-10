@@ -5,6 +5,7 @@ import os
 load_dotenv()
 
 dt_key = os.getenv("DT_API")
+bot_host = os.getenv("NNAME")
 
 def send_ding(tix,title,sdnames,sdwhatsya,sdnumber,sdlastouch,sdnameoff,sdlasttouch,status,tminutes,tseconds):
     
@@ -43,10 +44,10 @@ def send_ding(tix,title,sdnames,sdwhatsya,sdnumber,sdlastouch,sdnameoff,sdlastto
             },
             'msgtype': 'text',
             'text': {
-                'content': f'[{wut}] OFM Ticket 1.2\n\nTicket: {tixnum}\n\nTitle: {title}\n\nStatus: {tixstatus}\nOn Que: {tminutes}m {tseconds}s\nPlease get the ticket',
+                'content': f'[{wut}] OFM Ticket \n\nTicket: {tixnum}\n\nTitle: {title}\n\nStatus: {tixstatus}\nOn Que: {tminutes}m {tseconds}s\nPlease get the ticket\n\nBotHost:{bot_host}',
             },
         }
-        response = requests.post('https://oapi.dingtalk.com/robot/send', params=params, headers=headers, json=json_data)
+        response = requests.post('https://oapi.dingtalk.com/robot/send', params=params, headers=headers, json=json_data,timeout=120)
         return print(response)
 
 
@@ -81,10 +82,10 @@ def send_ding(tix,title,sdnames,sdwhatsya,sdnumber,sdlastouch,sdnameoff,sdlastto
             },
             'msgtype': 'text',
             'text': {
-                'content': f'[{wut}] OFM Ticket 1.2\n\nTicket: {tixnum}\n\nTitle: {title}\n\nStatus: {tixstatus}\n\nOwner: {owners}\n\nOn Que: {tminutes}m {tseconds}s',
+                'content': f'[{wut}] OFM Ticket 1.2\n\nTicket: {tixnum}\n\nTitle: {title}\n\nStatus: {tixstatus}\n\nOwner: {owners}\n\nOn Que: {tminutes}m {tseconds}s\n\nBotHost:{bot_host}',
             },
             }
-            response = requests.post('https://oapi.dingtalk.com/robot/send', params=params, headers=headers, json=json_data)
+            response = requests.post('https://oapi.dingtalk.com/robot/send', params=params, headers=headers, json=json_data,timeout=5)
             return print(response)
 
 
@@ -110,10 +111,68 @@ def send_ding(tix,title,sdnames,sdwhatsya,sdnumber,sdlastouch,sdnameoff,sdlastto
             },
             'msgtype': 'text',
             'text': {
-                'content': f'[{wut}] OFM Ticket 1.2\n\nTicket: {tixnum}\n\nTitle: {title}\n\nStatus: {tixstatus}\n\nOwner: {sdnameoff} ~~NOT AVAILABLE~~\nLast Handler: {sdnames}\n\nOn Que: {tminutes}m {tseconds}s',
+                'content': f'[{wut}] OFM Ticket 1.2\n\nTicket: {tixnum}\n\nTitle: {title}\n\nStatus: {tixstatus}\n\nOwner: {sdnameoff} ~~NOT AVAILABLE~~\nLast Handler: {sdnames}\n\nOn Que: {tminutes}m {tseconds}s\n\nBotHost:{bot_host}',
             },
             }
-            response = requests.post('https://oapi.dingtalk.com/robot/send', params=params, headers=headers, json=json_data)
+            response = requests.post('https://oapi.dingtalk.com/robot/send', params=params, headers=headers, json=json_data,timeout=120)
             return print(response)
 
 
+
+def send_ding_open_tix(stringdata,stringdata2,data):
+    headers = {
+            'Content-Type': 'application/json',
+        }
+
+    params = {
+            'access_token': '491833b0fb23152ca7c951a354bce0efcc79d009945cf391089b43d08c9e620e',
+    # https://oapi.dingtalk.com/robot/send?access_token=491833b0fb23152ca7c951a354bce0efcc79d009945cf391089b43d08c9e620e
+        }
+
+    json_data = {
+                    "at": {
+                "atMobiles":[
+                    ""  
+                ],
+                "atUserIds":[
+                    ""
+                ],
+                "isAtAll": bool(data['mention'])
+            },
+            'msgtype': 'text',
+            'text': {
+                'content': data['date']+'\n\n--TEST--\nAll Open Tickets OFM \n'+stringdata+'\n\n\nWrong Flow:\n'+stringdata2+'\n\n\n\nRuntime: '+str(data['runtime']),
+            },
+        }
+    response = requests.post('https://oapi.dingtalk.com/robot/send', params=params, headers=headers, json=json_data,timeout=120)
+    return print(response)
+
+
+
+def send_ding_error(_error_):
+    headers = {
+            'Content-Type': 'application/json',
+        }
+
+    params = {
+            'access_token': '0440438cefcd8450062bd8fc6ba5c47f9c9da4898fc08246ca7ce9e165c20d58',
+    # https://oapi.dingtalk.com/robot/send?access_token=0440438cefcd8450062bd8fc6ba5c47f9c9da4898fc08246ca7ce9e165c20d58
+        }
+
+    json_data = {
+                    "at": {
+                "atMobiles":[
+                    # "+63-9176136917","+63-9503358322","+63-9684100886","+63-9064474450","+63-9956286051"
+                ],
+                "atUserIds":[
+                    ""
+                ],
+                "isAtAll": bool(False)
+            },
+            'msgtype': 'text',
+            'text': {
+                'content':'OFM\n\n'+_error_,
+            },
+        }
+    response = requests.post('https://oapi.dingtalk.com/robot/send', params=params, headers=headers, json=json_data,timeout=120)
+    return print(response)
