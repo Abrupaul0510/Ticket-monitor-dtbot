@@ -244,9 +244,9 @@ def tixmonitor(cookiesverfied):
         #         ]
         #         }
         # # # print(tixcountres)
-        tixcount = tixcountres['OSSB']
+        tixcount = tixcountres
         print(len(tixcount))
-        if len(tixcount) == 1:
+        if len(tixcount) == 0:
             paul = "wala ticket"
         else:
             count = True
