@@ -357,7 +357,7 @@ def get_open_tix():
 
     for item in sorted_normaltix:
         print("")
-        stringdata += "\n\n*" + item['month'] + "\n"
+        stringdata += "\n*" + item['month'] + "\n"
         
         for ticket in item["tickets"]:
             stringdata += ticket['Ticket'] + " - " + ticket['chandler'] + "("+ticket['status']+")""\n"
@@ -427,7 +427,8 @@ def run15():
             get_open_tix()
             time.sleep(1200)
         except Exception as err:
-            _error_ = "An exception occurred:" + \
+            time.sleep(10)
+            _error_ = "Bot Host Error: An exception occurred:" + \
                 str(err)+"\nPlease ignore if error HTTP Time-Out \n---Will Re-run in 30sec---"
             print("An exception occurred:"+str(err) +
                   "\nPlease ignore if http time-out will Re-run in 30sec")

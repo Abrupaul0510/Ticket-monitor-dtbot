@@ -2,8 +2,8 @@ import time
 import requests
 import pandas as pd
 import re
-from requestcalls.getdata import get_tix_details,get_task_order
-from requestcalls.bot import send_ding,send_ding_error
+from requestcalls.getdata import get_tix_details,get_task_order,get_open_ticket
+from requestcalls.bot import send_ding,send_ding_error,send_ding_error2
 import datetime
 from dotenv import load_dotenv
 import os
@@ -58,7 +58,7 @@ def checknget_owner(sdstaffid,filterstatus):
 
     gc = gspread.service_account(cfile)
     
-    sh = gc.open('sdstatus')
+    sh = gc.open('dutypol')
 
     ###https://docs.google.com/spreadsheets/d/195PrVSPkEjvpvctcBP99vlVCOxD5QEmE7fp9YjFEDxE
 
@@ -106,7 +106,7 @@ def get_all_available(filterstatus):
 
     gc = gspread.service_account(cfile)
     
-    sh = gc.open('sdstatus')
+    sh = gc.open('dutypol')
 
     worksheet = sh.get_worksheet(0)
     data = worksheet.get_all_records()
@@ -121,12 +121,14 @@ def get_all_available(filterstatus):
 
     sdnumber = [d['SD.Number'] for d in my_dict]
 
-
+    print(sdnumber)
 
     allavail = []
     for items in sdnumber:
         sdnum = "+63-"+str(items)
-        allavail.append(sdnum)
+        allavail.append(str(sdnum))
+
+    print(allavail)
 
     return allavail
 
@@ -231,20 +233,21 @@ def tixmonitor(cookiesverfied):
         #         'title': 'Delete data of pac batch-20SLZ01071309 Bacoor IPRAN A  PAC 2022-12-19',
         #         'url': 'oss_core/ofm/modules/pto/workorder/views/newEngineeringCollaborationWorkOrderIng?todoFlag=Y&ticketType=RFT&packageId=1578625789908&orderCode=SRT20230110000005&workOrderId=3411081'   
         #         },
-        #         #  {  
-        #         # 'date': '2022-12-19 21:09:05',
-        #         # 'creator': 'Weicong Shi',
-        #         # 'ticketType': 'IT Service Request',
-        #         # 'terminal': '1',
-        #         # 'title': 'Delete data of pac batch-20SLZ01071309 Bacoor IPRAN A  PAC 2022-12-19',
-        #         # 'url': 'oss_core/ofm/modules/pto/workorder/views/newEngineeringCollaborationWorkOrderIng?todoFlag=Y&ticketType=RFT&packageId=1578625789908&orderCode=INT20221219000009&workOrderId=3411081'   
-        #         # },
+        #          {  
+        #         'date': '2022-12-19 21:09:05',
+        #         'creator': 'Weicong Shi',
+        #         'ticketType': 'IT Service Request',
+        #         'terminal': '1',
+        #         'title': 'Delete data of pac batch-20SLZ01071309 Bacoor IPRAN A  PAC 2022-12-19',
+        #         'url': 'oss_core/ofm/modules/pto/workorder/views/newEngineeringCollaborationWorkOrderIng?todoFlag=Y&ticketType=RFT&packageId=1578625789908&orderCode=INT20221219000009&workOrderId=3411081'   
+        #         }
         #         ]
         #         }
         # # # print(tixcountres)
-        tixcount = tixcountres
-        if len(tixcount) == 0:
-            paul = "meron"
+        tixcount = tixcountres['OSSB']
+        print(len(tixcount))
+        if len(tixcount) == 1:
+            paul = "wala ticket"
         else:
             count = True
 
@@ -281,11 +284,12 @@ def tixmonitor(cookiesverfied):
                     # pprint.pprint(samp)
                     domain = samp['systemDomain']
                     system = samp['system']
-                    title = samp['orderTitle']
+                    title = str(samp['orderTitle'])
+                    print(title)
                     domaindata = {
                         'tdomain' : domain,
                         'system' : system,
-                        'title' : title
+                        'title' : str(title),
                     }
                     tix = samp['orderCode'] #TIXNUM
                     status = samp['tacheName'] #STATUS
@@ -318,10 +322,11 @@ def tixmonitor(cookiesverfied):
                         sdstatusowner = owner_excel.get('Status')
                         sdname = owner_excel.get('Name')
                         sdnumber = owner_excel.get('Number')
+                        allavail = ""
 
 
                         if sdstatusowner == "Available":
-                            res = send_ding(tix,sdname,sdwhat,sdnumber,sdstatusowner,sdnameoff,sdlasttouch,status,tminutes,tseconds,domaindata)
+                            res = send_ding(tix,sdname,sdwhat,sdnumber,sdstatusowner,sdnameoff,sdlasttouch,status,tminutes,tseconds,domaindata,allavail)
     
                         if sdstatusowner == "Not Available":
                             # pprint.pprint(taskdata)
@@ -374,7 +379,7 @@ def tixmonitor(cookiesverfied):
                             sdnameoff = result.get('Name')
 
                             sdnames = ""
-                            res = send_ding(tix,name,sdwhat,number,sdstatusowner,sdnameoff,sdlasttouch,status,tminutes,tseconds,domaindata)
+                            res = send_ding(tix,name,sdwhat,number,sdstatusowner,sdnameoff,sdlasttouch,status,tminutes,tseconds,domaindata,allavail)
                             print(res)
 
                     else:
@@ -387,7 +392,7 @@ def tixmonitor(cookiesverfied):
                         sdlasttouch = ""
                         # GET all available
                         allavail = get_all_available(filterstatus='Available')
-                        res = send_ding(tix,sdnames,sdwhat,sdnumber,sdstatusowner,sdnameoff,sdlasttouch,status,tminutes,tseconds,allavail)
+                        res = send_ding(tix,sdnames,sdwhat,sdnumber,sdstatusowner,sdnameoff,sdlasttouch,status,tminutes,tseconds,domaindata,allavail)
                         print(res)
                             
                         
@@ -397,15 +402,6 @@ def tixmonitor(cookiesverfied):
         time.sleep(3)
 
 
-def startmonitor():
-    while True:
-        try:
-            cookiesverfied = compelete_session()
-            print('Monitoring your OFM To Do List....')
-            tixmonitor(cookiesverfied)
-        except ConnectionError as _err_:
-            print(_err_, "Will Re-run in 30sec")
-        time.sleep(30)
-
-#START Monitor
-startmonitor()
+cookiesverfied = compelete_session()
+print('Monitoring your OFM To Do List....')
+tixmonitor(cookiesverfied)
