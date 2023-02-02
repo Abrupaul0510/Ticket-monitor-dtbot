@@ -129,7 +129,6 @@ def send_ding_open_tix(stringdata,stringdata2,data):
 
     params = {
             'access_token': dt_key_checker,
-    # https://oapi.dingtalk.com/robot/send?access_token=491833b0fb23152ca7c951a354bce0efcc79d009945cf391089b43d08c9e620e Sample Changed
         }
 
     json_data = {
@@ -159,13 +158,12 @@ def send_ding_error(_error_):
 
     params = {
             'access_token': dt_key_checker,
-    # https://oapi.dingtalk.com/robot/send?access_token=0440438cefcd8450062bd8fc6ba5c47f9c9da4898fc08246ca7ce9e165c20d58 Changed
         }
 
     json_data = {
                     "at": {
                 "atMobiles":[
-                    # "+63-9176136917","+63-9503358322","+63-9684100886","+63-9064474450","+63-9956286051"
+                
                 ],
                 "atUserIds":[
                     ""
@@ -189,13 +187,12 @@ def send_ding_error2(_error_):
 
     params = {
             'access_token': dt_key,
-    # https://oapi.dingtalk.com/robot/send?access_token=0440438cefcd8450062bd8fc6ba5c47f9c9da4898fc08246ca7ce9e165c20d58 Changed
         }
 
     json_data = {
                     "at": {
                 "atMobiles":[
-                    # "+63-9176136917","+63-9503358322","+63-9684100886","+63-9064474450","+63-9956286051"
+                    ""
                 ],
                 "atUserIds":[
                     ""
@@ -204,7 +201,34 @@ def send_ding_error2(_error_):
             },
             'msgtype': 'text',
             'text': {
-                'content':'OFM tix monitor\nError @'+_error_,
+                'content':'Host Problem:\nError @'+str(_error_)+"\n\nPlease connect to VPN",
+            },
+        }
+    response = requests.post('https://oapi.dingtalk.com/robot/send', params=params, headers=headers, json=json_data,timeout=120)
+    return print(response)
+
+
+def wrongflowsend(stringdata2):
+    headers = {
+            'Content-Type': 'application/json',
+        }
+    params = {
+            'access_token': "77f330dd7580fcc779a7f7c9a9ac9166669dabe15b939328b233c6dac5319497",
+        }
+
+    json_data = {
+                    "at": {
+                "atMobiles":[
+                    ""
+                ],
+                "atUserIds":[
+                    ""
+                ],
+                "isAtAll": bool(False)
+            },
+            'msgtype': 'text',
+            'text': {
+                'content': f'Wrong Flow: {stringdata2}\n\nPlease check the ticket.',
             },
         }
     response = requests.post('https://oapi.dingtalk.com/robot/send', params=params, headers=headers, json=json_data,timeout=120)

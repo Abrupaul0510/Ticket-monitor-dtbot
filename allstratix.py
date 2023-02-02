@@ -3,7 +3,7 @@ import datetime
 import calendar
 from dateutil import parser
 import requests
-from requestcalls.bot import send_ding_open_tix, send_ding_error
+from requestcalls.bot import send_ding_open_tix, send_ding_error,wrongflowsend
 from requestcalls.getdata import get_task_order, get_tix_details
 
 
@@ -142,6 +142,10 @@ def get_record_by_page_srt(page):
 
     return resultdata.get('rows')
 
+
+
+
+
 def parse_date(month_string):
     return parser.parse(month_string)
 
@@ -229,6 +233,7 @@ def get_open_tix():
         tixdetails = res['resultData']["rows"][0]
         order_id = tixdetails['orderId']
         tix = tixdetails['orderCode']
+
         reporter = tixdetails['applyStaffName']
 
         while True:
@@ -356,7 +361,7 @@ def get_open_tix():
     sorted_normaltix = sorted(normaltix, key=lambda x: parse_date(x['month']))
 
     for item in sorted_normaltix:
-        print("")
+  
         stringdata += "\n*" + item['month'] + "\n"
         
         for ticket in item["tickets"]:
@@ -374,6 +379,8 @@ def get_open_tix():
             for ticket in item["tickets"]:
                 stringdata2 += ticket['Ticket'] + " - " + ticket['comment']+"\n"
                 mention = True
+        reswron = wrongflowsend(stringdata2)
+        print(reswron)
     
     print(run_time)
     data = {
@@ -381,7 +388,6 @@ def get_open_tix():
         'runtime': run_time,
         'mention': mention
     }
-    
 
 
     send_ding_open_tix(stringdata,stringdata2,data)
