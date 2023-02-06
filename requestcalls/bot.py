@@ -47,7 +47,7 @@ def send_ding(tix,sdnames,sdwhatsya,sdnumber,sdlastouch,sdnameoff,sdlasttouch,st
             },
             'msgtype': 'text',
             'text': {
-                'content': f'[{wut}] OFM Ticket \n\nTicket: {tixnum}\n\nTitle: {title}\n\nSystem Domain: {domain}\nSystem:{system}\n\nStatus: {tixstatus}\nOn Que: {tminutes}m {tseconds}s\nPlease get the ticket\n\n\n\nCurrent Host:{bot_host}',
+                'content': f'[{wut}] OFM Ticket \n\nTicket: {tixnum}\n\nTitle: {title}\n\nSystem Domain: {domain}\nSystem:{system}\n\nStatus: {tixstatus}\nOn Que: {tminutes}m {tseconds}s\nPlease get the ticket PAKUHA PO MGA POGI AT MAGANDA\n\n\n\nCurrent Host:{bot_host}',
             },
         }
         response = requests.post('https://oapi.dingtalk.com/robot/send', params=params, headers=headers, json=json_data,timeout=200)
@@ -228,7 +228,7 @@ def wrongflowsend(stringdata2):
             },
             'msgtype': 'text',
             'text': {
-                'content': f'Wrong Flow: {stringdata2}\n\nPlease check the ticket.',
+                'content': f'OFM Wrong Flow:\n{stringdata2}\n\nPlease check.',
             },
         }
     response = requests.post('https://oapi.dingtalk.com/robot/send', params=params, headers=headers, json=json_data,timeout=120)

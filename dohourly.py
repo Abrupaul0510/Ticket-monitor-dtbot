@@ -101,11 +101,17 @@ def checkticket(tixnumclean,dataobj):
                     return
         else:
             print("Done checking",tix +" with status of "+ status,"("+handler+")")
-            dateadd = {
-                    "month": monthwithday,
-                    "tickets": [{"Ticket": tix, "handler": handler, "orgName": orgName, "handlerorg" : handlerorg}]
-                    }
-            dataobj.append(dateadd)
+            if handlerorg != "Stratnet":
+                dateadd = {
+                        "month": monthwithday,
+                        "tickets": 
+                        [{  "Ticket": tix, 
+                            "handler": handler, 
+                            "orgName": orgName, 
+                            "handlerorg" : handlerorg
+                        }]
+                        }
+                dataobj.append(dateadd)
             return
 
 
@@ -119,6 +125,7 @@ def get_word_of_month(date):
 ###MAIN###
 print("Extracing data from excel...")
 df = pd.read_excel('rawdata.xlsx', sheet_name="2023 Ticket Tracker")
+
 
 data = df[df['Status'] == 'Second-line handle']
 
@@ -137,7 +144,10 @@ for tixnum in tixnum_ar:
 #OUTPUTING ALL DATA
 print("")
 print("")
-print("Generating...")
+print("IT Service Desk Hourly Update:")
+# IT Service Desk Hourly Update:
+# February 4 11:00 Number of Tickets: 830, Resolved: 734, Escalated: 28,
+# Pending customer confirmation: 63, Pending customer action: 5
 for month in dataobj:
     print("")
     print("*"+month["month"] + "")
